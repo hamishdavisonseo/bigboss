@@ -14,7 +14,7 @@ const nextConfig = {
       serverActions: true,
     },
     env: {
-      SITE_URL: 'https://tech-hub-ireland.com',
+      SITE_URL: 'https://tech-hub-ireland.info',
     },
     async redirects() {
       return [

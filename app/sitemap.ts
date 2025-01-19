@@ -3,7 +3,7 @@
 import { categories } from '@/data/categories'
 
 export default async function sitemap() {
-  const baseUrl = 'https://tech-hub-ireland.com'
+  const baseUrl = 'https://tech-hub-ireland.info'
   
   // Generate category and subcategory URLs
   const categoryUrls = categories.flatMap(category => {

@@ -9,6 +9,6 @@ export default function robots() {
           disallow: ['/api/', '/admin/'],
         },
       ],
-      sitemap: 'https://tech-hub-ireland.com/sitemap.xml',
+      sitemap: 'https://tech-hub-ireland.info/sitemap.xml',
     }
   }
