@@ -1,6 +1,6 @@
-
 // src/app/sitemap.ts
-import { categories } from '@/data/categories'
+import { categories, counties } from '@/data/categories'
+import { cache } from '@/lib/cache'
 
 export default async function sitemap() {
   const baseUrl = 'https://techhubireland.info'
@@ -23,7 +23,19 @@ export default async function sitemap() {
     
     return [categoryUrl, ...subcategoryUrls]
   })
-  
+
+  // Generate location-based URLs
+  const locationUrls = counties.flatMap(county =>
+    categories.flatMap(category =>
+      category.subcategories.map(subcategory => ({
+        url: `${baseUrl}/${county.toLowerCase()}/${category.slug}/${subcategory.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.9,
+      }))
+    )
+  )
+
   return [
     {
       url: baseUrl,
@@ -32,5 +44,6 @@ export default async function sitemap() {
       priority: 1,
     },
     ...categoryUrls,
+    ...locationUrls,
   ]
 }
