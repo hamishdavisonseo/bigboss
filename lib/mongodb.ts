@@ -6,7 +6,10 @@ if (!process.env.MONGODB_URI) {
 }
 
 const uri = process.env.MONGODB_URI
-const options = {}
+
+const options = {
+  ssl: true, // Ensure SSL is enabled
+};
 
 let client: MongoClient
 let clientPromise: Promise<MongoClient>
