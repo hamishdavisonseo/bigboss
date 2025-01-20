@@ -31,12 +31,12 @@ async function getBusinessData(subcategoryName: string, location: string): Promi
       keyword: `${subcategoryName} ${location}`,
       location_code: 2372,
       language_code: 'en',
-      depth: 10
+      depth: 6
     })
 
     const normalizedResults = results.map(normalizeBusinessData)
     await cache.set(cacheKey, normalizedResults)
-    return normalizedResults
+    return normalizedResults as Business[]
   } catch (error) {
     console.error('Error fetching business data:', error)
     return []

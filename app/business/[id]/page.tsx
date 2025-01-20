@@ -1,44 +1,37 @@
 // app/business/[id]/page.tsx
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { cache } from '@/lib/cache'
-import { normalizeBusinessData } from '@/utils/dataforseo'
-import { getBusinessById } from '@/utils/dataforseo'
-import type { Business } from '@/types/business'
-import { Metadata } from 'next'
+import { getBusinessById, normalizeBusinessData } from '@/utils/dataforseo'
 import BusinessMap from '@/components/ui/BusinessMap'
 import ReviewSection from '@/components/ui/ReviewSection'
 import BusinessHours from '@/components/ui/BusinessHours'
 import ContactInfo from '@/components/ui/ContactInfo'
+import type { Metadata } from 'next'
+import { Business } from '@/types/business'
 
 interface Props {
   params: { id: string }
 }
 
-async function getBusinessData(id: string): Promise<Business | null> {
-  const cacheKey = `business:${id}`.toLowerCase()
-  
+async function getBusinessData(id: string) {
   try {
-    console.log('Checking business cache for:', cacheKey)
-    const cachedData = await cache.get(cacheKey)
+    const response = await getBusinessById(id)
+    if (!response) {
+      console.log('No business data found for ID:', id)
+      return null
+    }
     
-    if (cachedData) {
-      console.log('Cache HIT for business:', id)
-      return cachedData as Business
+    const normalizedData = normalizeBusinessData(response)
+    if (!normalizedData) {
+      console.log('Failed to normalize business data for ID:', id)
+      return null
     }
 
-    console.log('Cache MISS for business:', id)
-    const result = await getBusinessById(id)
-    
-    if (result) {
-      const normalizedBusiness = normalizeBusinessData(result)
-      await cache.set(cacheKey, normalizedBusiness, 180) // Cache for 180 days
-      return normalizedBusiness
-    }
-    
-    return null
+    return normalizedData
   } catch (error) {
-    console.error('Error fetching business:', error)
+    console.error('Failed to fetch business data:', error)
     return null
   }
 }
@@ -47,66 +40,67 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const business = await getBusinessData(params.id)
   if (!business) return {}
 
-  const title = `${business.title} Reviews & Information | Tech Hub Ireland`
-  const description = business.snippet || 
-    `View contact details, reviews, and information for ${business.title} in ${business.address}. Rated ${business.rating.value}/5 from ${business.rating.votes_count} reviews.`
-
   return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      type: 'website', // Changed from 'business.business' to 'website'
-    },
-    alternates: {
-      canonical: `/business/${params.id}`
-    }
+    title: `${business.title} | Tech Hub Ireland`,
+    description: business.description || `Find information, reviews, and contact details for ${business.title}`,
   }
 }
 
 export default async function BusinessPage({ params }: Props) {
-  const business = await getBusinessData(params.id)
-  
+  console.log('Params:', params); // Log the entire params object
+  const businessId = params.id; // Ensure this is correctly set
+  const business = await getBusinessData(businessId);
+
   if (!business) {
-    notFound()
+    notFound();
   }
+
+  console.log('Business ID:', businessId); // Log the ID to check its value
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{business.title}</h1>
-          
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <Image
-              src={business.main_image || '/images/placeholder-business.jpg'}
-              alt={business.title}
-              width={800}
-              height={400}
-              className="w-full h-64 object-cover"
-            />
-            
-            <div className="p-6">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">About</h2>
-                <p className="text-gray-600">{business.snippet}</p>
-              </div>
-              
-              {business.work_hours && (
-                <BusinessHours hours={business.work_hours} />
-              )}
-            </div>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900">{business.title}</h1>
+            {business.category && (
+              <p className="mt-2 text-gray-600">{business.category}</p>
+            )}
           </div>
+
+          {business.main_image && (
+            <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
+              <Image
+                src={business.main_image}
+                alt={business.title}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+
+          {business.description && (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">About</h2>
+              <p className="text-gray-600">{business.description}</p>
+            </div>
+          )}
+
+          {business.work_hours && (
+            <BusinessHours hours={{ ...business.work_hours, current_status: business.work_hours.current_status as "open" | "closed" }} />
+          )}
         </div>
 
+        {/* Right Column */}
         <div>
           <ContactInfo
             phone={business.phone}
             address={business.address}
             website={business.url}
           />
-          
+
           {business.latitude && business.longitude && (
             <div className="mt-6">
               <BusinessMap
@@ -116,10 +110,12 @@ export default async function BusinessPage({ params }: Props) {
               />
             </div>
           )}
-          
-          <div className="mt-6">
-            <ReviewSection business={business} reviews={[]} />
-          </div>
+
+          {business.reviews && business.reviews.length > 0 && (
+            <div className="mt-6">
+              <ReviewSection business={business as Business} reviews={[]} />
+            </div>
+          )}
         </div>
       </div>
     </div>

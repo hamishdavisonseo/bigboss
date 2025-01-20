@@ -1,4 +1,26 @@
 // types/business.ts
+export interface BusinessRating {
+  value: number;
+  votes_count: number;
+}
+
+export interface BusinessData {
+  id: string;
+  title: string;
+  url?: string;
+  category: string;
+  rating: BusinessRating;
+  address: string;
+  phone?: string;
+  main_image?: string;
+  snippet?: string;
+  latitude?: number;
+  longitude?: number;
+  reviews?: any[];
+  work_hours?: any; // Define this type based on your structure
+  additional_categories?: string[];
+}
+
 export interface Business {
     id: string
     title: string

@@ -34,17 +34,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           keyword: `${q} ${location}`,
           location_code: 2372,
           language_code: 'en',
-          depth: 20
+          depth: 6
         })
         
         results = searchResponse.map(normalizeBusinessData)
-        
         if (category) {
-          results = results.filter((business: { category: string }) => business.category === category)
+          results = results.filter(business => business && business.category === category)
         }
         
         if (rating) {
-          results = results.filter((business: { rating: { value: number } }) => business.rating.value >= Number(rating))
+          results = results.filter(business => business && business.rating && business.rating.value >= Number(rating))
         }
         
         await cache.set(cacheKey, results)
@@ -72,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </aside>
         
         <main className="lg:col-span-3">
-          <BusinessGrid businesses={results} />
+          <BusinessGrid businesses={results as never[]} />
         </main>
       </div>
     </div>

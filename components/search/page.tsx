@@ -4,6 +4,7 @@ import { searchBusinesses, normalizeBusinessData } from '@/utils/dataforseo'
 import BusinessGrid from '@/components/ui/BusinessGrid'
 import SearchFilters from '@/components/search/SearchFilters'
 import SearchBar from '@/components/search/SearchBar'
+import type { BusinessData } from '@/types/business'
 
 interface SearchPageProps {
   searchParams: {
@@ -38,13 +39,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         })
         
         results = searchResponse.map(normalizeBusinessData)
-        
         if (category) {
-          results = results.filter((business: { category: string }) => business.category === category)
+          results = results.filter((business): business is BusinessData => business !== null && business.category === category)
         }
         
         if (rating) {
-          results = results.filter((business: { rating: { value: number } }) => business.rating.value >= Number(rating))
+          results = results.filter((business): business is BusinessData => business !== null && business.rating.value >= Number(rating))
         }
         
         await cache.set(cacheKey, results)
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </aside>
         
         <main className="lg:col-span-3">
-          <BusinessGrid businesses={results} />
+          <BusinessGrid businesses={results as never[]} />
         </main>
       </div>
     </div>

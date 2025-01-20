@@ -45,7 +45,7 @@ async function getBusinessData(subcategoryName: string, location: string): Promi
 
     const normalizedResults = results.map(normalizeBusinessData)
     await cache.set(cacheKey, normalizedResults, 180) // Cache for 180 days
-    return normalizedResults
+    return normalizedResults as Business[]
   } catch (error) {
     console.error('Error fetching business data:', error)
     return []

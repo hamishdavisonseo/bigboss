@@ -36,9 +36,7 @@ export default function BusinessCard({ business }: BusinessCardProps) {
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold text-gray-900">
-            <Link href={`/business/${business.id}`} className="hover:text-primary-600">
               {business.title}
-            </Link>
           </h3>
           <div className="flex items-center">
             <Star className="h-5 w-5 text-yellow-400 fill-current" />

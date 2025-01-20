@@ -30,7 +30,7 @@ export async function GET(request: Request) {
       keyword: `${query} ${location}`,
       location_code: 2372, // Ireland
       language_code: 'en',
-      depth: 10
+      depth: 6
     }
 
     const results = await searchBusinesses(searchParams)
