@@ -1,7 +1,7 @@
 // next-sitemap.config.js
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://tech-hub-ireland.com',
+  siteUrl: process.env.SITE_URL || 'https://techhubireland.info',
   generateRobotsTxt: true,
   exclude: ['/404', '/500'],
   robotsTxtOptions: {
@@ -51,7 +51,7 @@ import { categories, counties } from '@/data/categories'
 import { cache } from '@/lib/cache'
 
 export default async function sitemap() {
-  const baseUrl = 'https://tech-hub-ireland.com'
+  const baseUrl = 'https://techhubireland.info'
 
   // Get cached businesses
   let businesses = []
