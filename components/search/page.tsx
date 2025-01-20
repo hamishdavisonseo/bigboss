@@ -34,7 +34,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           keyword: `${q} ${location}`,
           location_code: 2372,
           language_code: 'en',
-          depth: 20
+          depth: 6
         })
         
         results = searchResponse.map(normalizeBusinessData)

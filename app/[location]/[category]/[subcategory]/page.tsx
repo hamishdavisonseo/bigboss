@@ -40,7 +40,7 @@ async function getBusinessData(subcategoryName: string, location: string): Promi
       keyword: `${subcategoryName} ${location} ireland`,
       location_code: 2372,
       language_code: 'en',
-      depth: 10
+      depth: 6
     })
 
     const normalizedResults = results.map(normalizeBusinessData)
