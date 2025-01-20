@@ -1,6 +1,7 @@
 // utils/dataforseo.ts
 import axios from 'axios'
 import { cache } from '@/lib/cache'
+import { BusinessData } from '@/types/business'
 
 const DATAFORSEO_BASE_URL = 'https://api.dataforseo.com/v3'
 const AUTH_TOKEN = process.env.DATAFORSEO_API_KEY
@@ -115,8 +116,8 @@ export function normalizeSearchData(rawData: any) {
 }
 
 // Normalize data for individual business pages (full detailed data)
-export function normalizeBusinessData(rawData: any) {
-  if (!rawData) return null
+export function normalizeBusinessData(rawData: any): BusinessData | null {
+  if (!rawData) return null;
 
   return {
     id: rawData.place_id || rawData.cid,
@@ -125,22 +126,19 @@ export function normalizeBusinessData(rawData: any) {
     category: rawData.category,
     rating: {
       value: rawData.rating?.value || 0,
-      votes_count: rawData.rating?.votes_count || 0
+      votes_count: rawData.rating?.votes_count || 0,
     },
     address: rawData.address,
     phone: rawData.phone,
     main_image: rawData.main_image,
-    description: rawData.description,
-    latitude: rawData.latitude,
-    longitude: rawData.longitude,
-    work_hours: rawData.work_time?.work_hours || null,
-    additional_categories: rawData.additional_categories || [],
-    logo: rawData.logo,
-    total_photos: rawData.total_photos,
-    rating_distribution: rawData.rating_distribution,
-    attributes: rawData.attributes,
-    people_also_search: rawData.people_also_search,
-    place_topics: rawData.place_topics,
-    reviews: rawData.reviews || []
-  }
+    snippet: rawData.snippet,
+    place_id: rawData.place_id,
+    cid: rawData.cid,
+    longitude: rawData.longitude || 0,
+    latitude: rawData.latitude || 0,
+    work_hours: rawData.work_hours || null,
+    description: rawData.description || '',
+    reviews: rawData.reviews || [],
+  };
+
 }

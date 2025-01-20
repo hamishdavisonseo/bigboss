@@ -111,11 +111,11 @@ export default async function BusinessPage({ params }: Props) {
             </div>
           )}
 
-          {business.reviews && business.reviews.length > 0 && (
-            <div className="mt-6">
-              <ReviewSection business={business as Business} reviews={[]} />
-            </div>
-          )}
+{Array.isArray(business.reviews) && business.reviews.length > 0 && (
+  <div className="mt-6">
+    <ReviewSection business={business as unknown as Business} reviews={business.reviews} />
+  </div>
+)}
         </div>
       </div>
     </div>

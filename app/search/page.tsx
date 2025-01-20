@@ -39,11 +39,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         
         results = searchResponse.map(normalizeBusinessData)
         if (category) {
-          results = results.filter(business => business && business.category === category)
+          results = results.filter((business: { category: string }) => business && business.category === category)
         }
         
         if (rating) {
-          results = results.filter(business => business && business.rating && business.rating.value >= Number(rating))
+          results = results.filter((business: { rating: { value: number } }) => business && business.rating && business.rating.value >= Number(rating))
         }
         
         await cache.set(cacheKey, results)

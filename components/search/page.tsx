@@ -23,7 +23,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   
   const cacheKey = `search:${q}:${location}:${category}:${rating}`
   
-  let results = []
+  let results: BusinessData[] = []
   
   if (q) {
     try {
@@ -38,13 +38,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           depth: 6
         })
         
-        results = searchResponse.map(normalizeBusinessData)
+        results = searchResponse.map(normalizeBusinessData) as BusinessData[]
         if (category) {
-          results = results.filter((business): business is BusinessData => business !== null && business.category === category)
+          results = results.filter((business: BusinessData | null) => business && business.category === category)
         }
         
         if (rating) {
-          results = results.filter((business): business is BusinessData => business !== null && business.rating.value >= Number(rating))
+          results = results.filter((business: BusinessData | null) => business && business.rating.value >= Number(rating))
         }
         
         await cache.set(cacheKey, results)
