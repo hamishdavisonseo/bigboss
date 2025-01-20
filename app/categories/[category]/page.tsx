@@ -86,7 +86,7 @@ export default async function CategoryPage({
                 {subcategory.description}
               </p>
               <div className="mt-4 flex items-center text-primary-600 group-hover:text-primary-700">
-                <span className="text-sm font-medium">View providers</span>
+                <span className="text-sm font-medium">View providers Now</span>
                 <svg
                   className="ml-2 w-4 h-4"
                   fill="none"
